@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MultiThreading.Task3.MatrixMultiplier.Matrices;
 using MultiThreading.Task3.MatrixMultiplier.Multipliers;
@@ -18,8 +19,29 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
         [TestMethod]
         public void ParallelEfficiencyTest()
         {
-            // todo: implement a test method to check the size of the matrix which makes parallel multiplication more effective than
-            // todo: the regular one
+            // Arrange
+            var regularMultiplier = new MatricesMultiplier();
+            var parallelMultiplier = new MatricesMultiplierParallel();
+
+            var timer = new Stopwatch();
+            var firstMatrix = GenerateRandomMatrix(200, 200);
+            var secondMatrix = GenerateRandomMatrix(200, 200);
+
+            // Act
+            timer.Start();
+            regularMultiplier.Multiply(firstMatrix, secondMatrix);
+            timer.Stop();
+            var regularSeconds = timer.Elapsed.TotalSeconds;
+
+            timer.Restart();
+            parallelMultiplier.Multiply(firstMatrix, secondMatrix);
+            timer.Stop();
+            var parallelSeconds = timer.Elapsed.TotalSeconds;
+
+            // Assert
+            Assert.IsTrue(parallelSeconds < regularSeconds,
+                          $"Regular result - {regularSeconds} sec\r\n" +
+                          $"Parallel result - {parallelSeconds} sec");
         }
 
         #region private methods
@@ -31,6 +53,7 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
                 throw new ArgumentNullException(nameof(matrixMultiplier));
             }
 
+            // Arrange
             var m1 = new Matrix(3, 3);
             m1.SetElement(0, 0, 34);
             m1.SetElement(0, 1, 2);
@@ -57,7 +80,10 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
             m2.SetElement(2, 1, 8);
             m2.SetElement(2, 2, 9);
 
+            // Act
             var multiplied = matrixMultiplier.Multiply(m1, m2);
+
+            // Assert
             Assert.AreEqual(448, multiplied.GetElement(0, 0));
             Assert.AreEqual(1826, multiplied.GetElement(0, 1));
             Assert.AreEqual(3052, multiplied.GetElement(0, 2));
@@ -69,6 +95,22 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
             Assert.AreEqual(109, multiplied.GetElement(2, 0));
             Assert.AreEqual(213, multiplied.GetElement(2, 1));
             Assert.AreEqual(728, multiplied.GetElement(2, 2));
+        }
+
+        private Matrix GenerateRandomMatrix(int rowCount, int colCount)
+        {
+            var matrix = new Matrix(rowCount, colCount);
+            var random = new Random();
+
+            for (int row = 0; row < rowCount; row++)
+            {
+                for (int col = 0; col < colCount; col++)
+                {
+                    matrix.SetElement(row, col, random.Next(1, 100));
+                }
+            }
+
+            return matrix;
         }
 
         #endregion

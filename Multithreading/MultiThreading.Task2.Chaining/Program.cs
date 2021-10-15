@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace MultiThreading.Task2.Chaining
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Console.WriteLine(".Net Mentoring Program. MultiThreading V1 ");
             Console.WriteLine("2.	Write a program, which creates a chain of four Tasks.");
