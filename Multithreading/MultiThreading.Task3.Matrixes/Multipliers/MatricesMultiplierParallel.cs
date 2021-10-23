@@ -10,7 +10,7 @@ namespace MultiThreading.Task3.MatrixMultiplier.Multipliers
         {
             var resultMatrix = new Matrix(m1.RowCount, m2.ColCount);
 
-            Parallel.For(0, (int)m1.RowCount, (state) => MultipleFirstMatrixRows(state, m1, m2, resultMatrix));
+            Parallel.For(0, (int)m1.RowCount, new ParallelOptions { MaxDegreeOfParallelism = 8 }, (state) => MultipleFirstMatrixRows(state, m1, m2, resultMatrix));
 
             return resultMatrix;
         }
@@ -20,7 +20,7 @@ namespace MultiThreading.Task3.MatrixMultiplier.Multipliers
                                              IMatrix m2,
                                              IMatrix resultMatrix)
         {
-            Parallel.For(0, (int)m2.ColCount, (state) => MultipleSecondMartixColumn(state, firstMatrixRowIndex, m1, m2, resultMatrix));
+            Parallel.For(0, (int)m2.ColCount, new ParallelOptions { MaxDegreeOfParallelism = 8},(state) => MultipleSecondMartixColumn(state, firstMatrixRowIndex, m1, m2, resultMatrix));
         }
 
         private void MultipleSecondMartixColumn(int secondMatrixColumnIndex,
@@ -31,7 +31,7 @@ namespace MultiThreading.Task3.MatrixMultiplier.Multipliers
         {
             long sum = 0;
 
-            Parallel.For(0, (int)m1.ColCount, (state) => CalculateResultForMatrix(state, m1, m2, firstMatrixRowIndex, secondMatrixColumnIndex, ref sum));
+            Parallel.For(0, (int)m1.ColCount, new ParallelOptions { MaxDegreeOfParallelism = 8 }, (state) => CalculateResultForMatrix(state, m1, m2, firstMatrixRowIndex, secondMatrixColumnIndex, ref sum));
 
             resultMatrix.SetElement(firstMatrixRowIndex, secondMatrixColumnIndex, sum);
         }
