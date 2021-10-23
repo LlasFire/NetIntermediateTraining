@@ -6,13 +6,16 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MultiThreading.Task5.Threads.SharedCollection
 {
     class Program
     {
-        private static readonly object _lock = new object();
+        static AutoResetEvent readHandler = new AutoResetEvent(false);
+        static AutoResetEvent writeHandler = new AutoResetEvent(true);
+        private static List<int> sharedList = new List<int>();
 
         static void Main(string[] args)
         {
@@ -21,45 +24,38 @@ namespace MultiThreading.Task5.Threads.SharedCollection
             Console.WriteLine("Use Thread, ThreadPool or Task classes for thread creation and any kind of synchronization constructions.");
             Console.WriteLine();
 
-            var sharedList = new List<int>();
 
-            for (int i = 1; i <= 10; i++)
-            {
-                AddItemInCollection(i, sharedList).GetAwaiter().GetResult();
-                PrintItem(sharedList).GetAwaiter().GetResult();
-            }
+            var fact = new TaskFactory();
+
+            fact.StartNew(AddItemInCollection);
+            fact.StartNew(AddItemInCollection);
+            fact.StartNew(PrintCollection);
 
             Console.ReadLine();
         }
 
-        private static Task AddItemInCollection(int addingValue, List<int> sharedList)
+        private static void AddItemInCollection()
         {
-            lock (_lock)
+            for (int i = 1; i <= 10; i++)
             {
-                var task = new Task(() =>
-                {
-                    sharedList.Add(addingValue);
-                });
+                writeHandler.WaitOne();
 
-                task.Start();
+                sharedList.Add(i);
 
-                return task;
+                readHandler.Set();
             }
         }
 
-        private static Task PrintItem(List<int> sharedList)
+        private static void PrintCollection()
         {
-            lock (_lock)
+            while(sharedList.Count < 10)
             {
-                var task = new Task(() =>
-                {
-                    var result = string.Join(", ", sharedList);
-                    Console.WriteLine($"[{result}]");
-                });
+                readHandler.WaitOne();
 
-                task.Start();
+                var result = string.Join(", ", sharedList);
+                Console.WriteLine($"[{result}]");
 
-                return task;
+                writeHandler.Set();
             }
         }
     }
