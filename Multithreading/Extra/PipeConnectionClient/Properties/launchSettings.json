@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PipeConnectionClient": {
+      "commandName": "Project",
+      "commandLineArgs": "spawnclient"
+    }
+  }
+}

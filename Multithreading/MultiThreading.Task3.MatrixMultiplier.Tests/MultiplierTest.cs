@@ -24,8 +24,8 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
             var parallelMultiplier = new MatricesMultiplierParallel();
 
             var timer = new Stopwatch();
-            var firstMatrix = GenerateRandomMatrix(200, 200);
-            var secondMatrix = GenerateRandomMatrix(200, 200);
+            var firstMatrix = GenerateRandomMatrix(220, 220);
+            var secondMatrix = GenerateRandomMatrix(220, 220);
 
             // Act
             timer.Start();
