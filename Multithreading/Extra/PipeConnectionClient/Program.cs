@@ -1,144 +1,69 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
-using System.Security.Principal;
+﻿using NamedPipeWrapper;
+using PipeCoreInfrastructure;
+using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
 public class PipeClient
 {
-    private static int numClients = 4;
-
-    public static void Main(string[] args)
+    private static readonly List<string> _preparedMesages = new List<string>
     {
-        if (args.Length > 0)
+        "Lorem ipsum dolor sit amet",
+        "Platea dictumst quisque sagittis purus sit amet volutpat consequat.",
+        "Metus vulputate eu scelerisque felis imperdiet proin fermentum leo vel.",
+        "Arcu non sodales neque sodales ut etiam sit. Adipiscing elit ut aliquam purus sit amet luctus venenatis.",
+        "Mi eget mauris pharetra et ultrices neque. Ornare quam viverra orci sagittis eu.",
+        "Sed turpis tincidunt id aliquet."
+    };
+
+    private static readonly NamedPipeClient<byte[]> _client = GenerateNamedPipeClient();
+
+    public static void Main()
+    {
+
+        var rand = new Random();
+        var messageCount = rand.Next(3, 7);
+
+        for (var index = 1; index < messageCount; index++)
         {
-            if (args[0] == "spawnclient")
-            {
-                var pipeClient =
-                    new NamedPipeClientStream(".", "testpipe",
-                        PipeDirection.InOut, PipeOptions.None,
-                        TokenImpersonationLevel.Impersonation);
+            var message = _preparedMesages[rand.Next(0, _preparedMesages.Count - 1)];
 
-                Console.WriteLine("Connecting to server...\n");
-                pipeClient.Connect();
+            _client.PushMessage(ReadWrite.Encode(message));
+            Thread.Sleep(rand.Next(100, 2500));
+        }
 
-                var ss = new StreamString(pipeClient);
-                // Validate the server's signature string.
-                if (ss.ReadString() == "I am the one true server!")
-                {
-                    // The client security token is sent with the first write.
-                    // Send the name of the file whose contents are returned
-                    // by the server.
-                    ss.WriteString("My Name!!!");
+        Console.ReadKey();
+        _client.Stop();
+    }
 
-                    // Print the file to the screen.
-                    Console.Write(ss.ReadString());
-                }
-                else
-                {
-                    Console.WriteLine("Server could not be verified.");
-                }
-                pipeClient.Close();
-                // Give the client process some time to display results before exiting.
-                Thread.Sleep(4000);
-            }
+    public static NamedPipeClient<byte[]> GenerateNamedPipeClient()
+    {
+        var client = new NamedPipeClient<byte[]>("MyServerPipe");
+        client.ServerMessage += HandleServerMessage;
+        client.Disconnected += Client_Disconnected;
+        client.Start();
+
+        return client;
+    }
+
+    private static void Client_Disconnected(NamedPipeConnection<byte[], byte[]> connection)
+    {
+        _client.Stop();
+    }
+
+    public static void HandleServerMessage(NamedPipeConnection<byte[], byte[]> conn, byte[] output)
+    {
+        var message = ReadWrite.Decode(output);
+        var name = conn.Name;
+
+        if (message.StartsWith("Client"))
+        {
+            Console.WriteLine(message);
         }
         else
         {
-            Console.WriteLine("\n*** Named pipe client stream with impersonation example ***\n");
-            StartClients();
+            Console.WriteLine($"{name} says: {message}");
         }
-    }
-
-    // Helper function to create pipe client processes
-    private static void StartClients()
-    {
-        string currentProcessName = Environment.CommandLine;
-
-        // Remove extra characters when launched from Visual Studio
-        currentProcessName = currentProcessName.Trim('"', ' ');
-
-        currentProcessName = Path.ChangeExtension(currentProcessName, ".exe");
-        Process[] plist = new Process[numClients];
-
-        Console.WriteLine("Spawning client processes...\n");
-
-        if (currentProcessName.Contains(Environment.CurrentDirectory))
-        {
-            currentProcessName = currentProcessName.Replace(Environment.CurrentDirectory, String.Empty);
-        }
-
-        // Remove extra characters when launched from Visual Studio
-        currentProcessName = currentProcessName.Replace("\\", String.Empty);
-        currentProcessName = currentProcessName.Replace("\"", String.Empty);
-
-        int i;
-        for (i = 0; i < numClients; i++)
-        {
-            // Start 'this' program but spawn a named pipe client.
-            plist[i] = Process.Start(currentProcessName, "spawnclient");
-        }
-        while (i > 0)
-        {
-            for (int j = 0; j < numClients; j++)
-            {
-                if (plist[j] != null)
-                {
-                    if (plist[j].HasExited)
-                    {
-                        Console.WriteLine($"Client process[{plist[j].Id}] has exited.");
-                        plist[j] = null;
-                        i--;    // decrement the process watch count
-                    }
-                    else
-                    {
-                        Thread.Sleep(250);
-                    }
-                }
-            }
-        }
-        Console.WriteLine("\nClient processes finished, exiting.");
-    }
-}
-
-// Defines the data protocol for reading and writing strings on our stream.
-public class StreamString
-{
-    private Stream ioStream;
-    private UnicodeEncoding streamEncoding;
-
-    public StreamString(Stream ioStream)
-    {
-        this.ioStream = ioStream;
-        streamEncoding = new UnicodeEncoding();
-    }
-
-    public string ReadString()
-    {
-        int len;
-        len = ioStream.ReadByte() * 256;
-        len += ioStream.ReadByte();
-        var inBuffer = new byte[len];
-        ioStream.Read(inBuffer, 0, len);
-
-        return streamEncoding.GetString(inBuffer);
-    }
-
-    public int WriteString(string outString)
-    {
-        byte[] outBuffer = streamEncoding.GetBytes(outString);
-        int len = outBuffer.Length;
-        if (len > UInt16.MaxValue)
-        {
-            len = (int)UInt16.MaxValue;
-        }
-        ioStream.WriteByte((byte)(len / 256));
-        ioStream.WriteByte((byte)(len & 255));
-        ioStream.Write(outBuffer, 0, len);
-        ioStream.Flush();
-
-        return outBuffer.Length + 2;
     }
 }
