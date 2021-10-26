@@ -19,7 +19,7 @@ namespace CloudServices
         /// <param name="url">The visited url.</param>
         public async Task RegisterVisitAsync(string url)
         {
-            await Task.Delay(2000).ConfigureAwait(false); // emulation of long-running operation is here
+            await Task.Delay(2000); // emulation of long-running operation is here
           
             Statistics.AddOrUpdate(url, 1, (key, value) => value + 1);
         }
@@ -31,7 +31,7 @@ namespace CloudServices
         /// <returns>The amount of registered visits.</returns>
         public async Task<long> GetVisitsCountAsync(string url)
         {
-            await Task.Delay(100).ConfigureAwait(false); // emulation of long-running operation is here
+            await Task.Delay(100); // emulation of long-running operation is here
 
             Statistics.TryGetValue(url, out var visits);
             return visits;
