@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 public class PipeClient
 {
@@ -17,39 +18,45 @@ public class PipeClient
         "Sed turpis tincidunt id aliquet."
     };
 
-    private static readonly NamedPipeClient<byte[]> _client = GenerateNamedPipeClient();
-
     public static void Main()
     {
-
-        var rand = new Random();
-        var messageCount = rand.Next(3, 7);
-
-        for (var index = 1; index < messageCount; index++)
+        for (var i = 0; i < 5; i++)
         {
-            var message = _preparedMesages[rand.Next(0, _preparedMesages.Count - 1)];
-
-            _client.PushMessage(ReadWrite.Encode(message));
-            Thread.Sleep(rand.Next(100, 2500));
+            HandleSeparateClientInTask();
+            Thread.Sleep(3000);
         }
 
         Console.ReadKey();
-        _client.Stop();
+    }
+
+    private static void HandleSeparateClientInTask()
+    {
+        static void GenerateClient()
+        {
+            var client = GenerateNamedPipeClient();
+            var rand = new Random();
+            var messageCount = rand.Next(3, 7);
+
+            for (var index = 1; index < messageCount; index++)
+            {
+                var message = _preparedMesages[rand.Next(0, _preparedMesages.Count - 1)];
+
+                client.PushMessage(ReadWrite.Encode(message));
+                Thread.Sleep(rand.Next(100, 2500));
+            }
+        }
+
+        Task.Factory.StartNew(GenerateClient);
     }
 
     public static NamedPipeClient<byte[]> GenerateNamedPipeClient()
     {
         var client = new NamedPipeClient<byte[]>("MyServerPipe");
         client.ServerMessage += HandleServerMessage;
-        client.Disconnected += Client_Disconnected;
+        client.Disconnected += (connection) => { client.Stop(); };
         client.Start();
 
         return client;
-    }
-
-    private static void Client_Disconnected(NamedPipeConnection<byte[], byte[]> connection)
-    {
-        _client.Stop();
     }
 
     public static void HandleServerMessage(NamedPipeConnection<byte[], byte[]> conn, byte[] output)
