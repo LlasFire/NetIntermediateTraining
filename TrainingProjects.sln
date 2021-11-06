@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipeConnectionClient", "Mul
 		{666B588F-276C-467A-8272-2552836D54BB} = {666B588F-276C-467A-8272-2552836D54BB}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeCoreInfrastructure", "Multithreading\Extra\PipeCoreInfrastructure\PipeCoreInfrastructure.csproj", "{666B588F-276C-467A-8272-2552836D54BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipeCoreInfrastructure", "Multithreading\Extra\PipeCoreInfrastructure\PipeCoreInfrastructure.csproj", "{666B588F-276C-467A-8272-2552836D54BB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Asyncronius", "Asyncronius", "{756AD969-BEEF-4BCE-BBA9-CE9C33F0BC58}"
 EndProject
@@ -40,6 +40,18 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncAwait.Task2.CodeReviewChallenge", "Asyncronius\AsyncAwait.Task2.CodeReviewChallenge\AsyncAwait.Task2.CodeReviewChallenge.csproj", "{A1C62710-E513-48D4-82C5-723F03643DED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudServices", "Asyncronius\CloudServices\CloudServices.csproj", "{B355DA35-8E12-4CAB-B069-A9C2A8F147CA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MessagingQueue", "MessagingQueue", "{6223981F-E7F4-488E-AA6F-763FC3AED3B2}"
+	ProjectSection(SolutionItems) = preProject
+		E:\Desktop\AdvancedTask.drawio = E:\Desktop\AdvancedTask.drawio
+		E:\Desktop\BaseTask.drawio = E:\Desktop\BaseTask.drawio
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueClient", "MessagingQueue\QueueClient\QueueClient.csproj", "{C9624368-5776-485B-9571-26996FA931D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueServer", "MessagingQueue\QueueServer\QueueServer.csproj", "{8993041E-7738-4246-B8C0-D4DAA7E2567D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "MessagingQueue\Infrastructure\Infrastructure.csproj", "{D7459071-04D9-43BF-81F7-E7A924252028}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +111,18 @@ Global
 		{B355DA35-8E12-4CAB-B069-A9C2A8F147CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B355DA35-8E12-4CAB-B069-A9C2A8F147CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B355DA35-8E12-4CAB-B069-A9C2A8F147CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9624368-5776-485B-9571-26996FA931D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9624368-5776-485B-9571-26996FA931D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9624368-5776-485B-9571-26996FA931D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9624368-5776-485B-9571-26996FA931D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8993041E-7738-4246-B8C0-D4DAA7E2567D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8993041E-7738-4246-B8C0-D4DAA7E2567D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8993041E-7738-4246-B8C0-D4DAA7E2567D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8993041E-7738-4246-B8C0-D4DAA7E2567D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7459071-04D9-43BF-81F7-E7A924252028}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7459071-04D9-43BF-81F7-E7A924252028}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7459071-04D9-43BF-81F7-E7A924252028}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7459071-04D9-43BF-81F7-E7A924252028}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -118,6 +142,9 @@ Global
 		{3020F590-B3B2-448F-9F4F-B28425E6CD73} = {756AD969-BEEF-4BCE-BBA9-CE9C33F0BC58}
 		{A1C62710-E513-48D4-82C5-723F03643DED} = {756AD969-BEEF-4BCE-BBA9-CE9C33F0BC58}
 		{B355DA35-8E12-4CAB-B069-A9C2A8F147CA} = {756AD969-BEEF-4BCE-BBA9-CE9C33F0BC58}
+		{C9624368-5776-485B-9571-26996FA931D5} = {6223981F-E7F4-488E-AA6F-763FC3AED3B2}
+		{8993041E-7738-4246-B8C0-D4DAA7E2567D} = {6223981F-E7F4-488E-AA6F-763FC3AED3B2}
+		{D7459071-04D9-43BF-81F7-E7A924252028} = {6223981F-E7F4-488E-AA6F-763FC3AED3B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {219C3244-1D6D-422F-B8B6-3722419E57AC}
