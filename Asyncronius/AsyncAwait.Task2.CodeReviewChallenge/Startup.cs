@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AsyncAwait.CodeReviewChallenge
+namespace AsyncAwait.Task2.CodeReviewChallenge
 {
     public class Startup
     {
