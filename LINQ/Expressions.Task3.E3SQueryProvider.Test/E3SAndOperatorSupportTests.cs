@@ -10,32 +10,50 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Expressions.Task3.E3SQueryProvider.Helpers;
 using Expressions.Task3.E3SQueryProvider.Models.Entities;
+using Expressions.Task3.E3SQueryProvider.Services;
+using Microsoft.Extensions.Configuration;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Expressions.Task3.E3SQueryProvider.Test
 {
     public class E3SAndOperatorSupportTests
     {
+
+        #region private 
+
+        private static readonly IConfigurationRoot config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        private static readonly string _baseUrl = config["api:apiBaseUrl"];
+
+        #endregion
+
         #region SubTask 3: AND operator support
 
         [Fact]
         public void TestAndQueryable()
         {
+            // Arrange
             var translator = new ExpressionToFtsRequestTranslator();
             Expression<Func<IQueryable<EmployeeEntity>, IQueryable<EmployeeEntity>>> expression
                 = query => query.Where(e => e.Workstation == "EPRUIZHW006" && e.Manager.StartsWith("John"));
-            /*
-             * The expression above should be converted to the following FTSQueryRequest and then serialized inside FTSRequestGenerator:
-             * "statements": [
-                { "query":"Workstation:(EPRUIZHW006)"},
-                { "query":"Manager:(John*)"}
-                // Operator between queries is AND, in other words result set will fit to both statements above
-              ],
-             */
 
-            // todo: create asserts for this test by yourself, because they will depend on your final implementation
-            throw new NotImplementedException("Please implement this test and the appropriate functionality");
+            var translated = translator.Translate(expression);
+
+            var expectedResultSource = "Workstation:(EPRUIZHW006);Manager:(John*)";
+            var generator = new FtsRequestGenerator(_baseUrl);
+
+            var expectedResult = generator.GenerateRequestUrl(typeof(EmployeeEntity), expectedResultSource);
+
+            // Act
+            var request = generator.GenerateRequestUrl(typeof(EmployeeEntity), translated);
+
+            // Assert
+            Assert.Equal(expectedResult, request);
         }
 
         #endregion

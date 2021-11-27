@@ -99,6 +99,11 @@ namespace Expressions.Task3.E3SQueryProvider
                     Visit(nodeConstant);
                     _resultStringBuilder.Append(")");
                     break;
+                case ExpressionType.AndAlso:
+                    Visit(node.Left);
+                    _resultStringBuilder.Append(";");
+                    Visit(node.Right);
+                    break;
 
                 default:
                     throw new NotSupportedException($"Operation '{node.NodeType}' is not supported");
