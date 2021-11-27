@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace AsyncAwait.CodeReviewChallenge
+namespace AsyncAwait.Task2.CodeReviewChallenge
 {
     public class Program
     {
