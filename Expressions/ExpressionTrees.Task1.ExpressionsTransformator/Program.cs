@@ -19,10 +19,9 @@ namespace ExpressionTrees.Task1.ExpressionsTransformer
             Console.WriteLine("Expression Visitor for increment/decrement.");
             Console.WriteLine();
 
-            var convertor = new IncDecExpressionVisitor();
-            var paramsDictionary = new Dictionary<string, object>();
-
             #region Increment/Decrement
+
+            var convertor = new IncDecExpressionVisitor();
 
             var listOfExpressions = new List<Expression<Func<int, int>>>
             {
@@ -44,7 +43,40 @@ namespace ExpressionTrees.Task1.ExpressionsTransformer
                 var translatedNode = convertor.Translate(item);
 
                 Console.WriteLine("Item after translation:");
+                Console.WriteLine(translatedNode);
+                Console.WriteLine();
+            }
+
+            #endregion
+
+            #region Parameter replacement
+
+            var replacement = new ReplacementVisitor<int>();
+            var parameters = new Dictionary<string, int>
+            {
+                { "firstParam", 5 },
+                { "secondParam", 11 },
+
+            };
+
+            var listOfExpressions2 = new List<Expression<Func<int, int>>>
+            {
+                (secondParam) => (secondParam * 4) - 18 ,
+                (firstParam) => firstParam * 3,
+                (firstParam) => 15 + firstParam,
+                (secondParam) => secondParam % 8,
+            };
+
+            foreach (var item in listOfExpressions2)
+            {
+                Console.WriteLine("Item before translation:");
                 Console.WriteLine(item);
+                Console.WriteLine();
+
+                var translatedNode = replacement.Replace(item, parameters);
+
+                Console.WriteLine("Item after translation:");
+                Console.WriteLine(translatedNode);
                 Console.WriteLine();
             }
 

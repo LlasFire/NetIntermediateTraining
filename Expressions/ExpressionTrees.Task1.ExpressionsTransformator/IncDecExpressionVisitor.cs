@@ -12,12 +12,6 @@ namespace ExpressionTrees.Task1.ExpressionsTransformer
             return translated;
         }
 
-        public Expression ReplaceParams(Expression exp, Dictionary<string, object> replacingDictionary)
-        {
-            var translated = Visit(exp);
-            return translated;
-        }
-
         protected override Expression VisitBinary(BinaryExpression node)
         {
             switch(node.NodeType)
