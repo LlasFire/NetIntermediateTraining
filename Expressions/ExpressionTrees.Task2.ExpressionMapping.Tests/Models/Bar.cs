@@ -1,7 +1,19 @@
-﻿namespace ExpressionTrees.Task2.ExpressionMapping.Tests.Models
+﻿using System;
+
+namespace ExpressionTrees.Task2.ExpressionMapping.Tests.Models
 {
-    internal class Bar
+    public class Bar
     {
-        // add here some other properties
+        public string Name { get; set; }
+
+        public string City { get; set; }
+
+        public string Address { get; set; }
+
+        public Guid Id { get; set; }
+
+        public decimal Count { get; set; }
+
+        public int BreakProperty { get; set; }
     }
 }
