@@ -14,6 +14,12 @@ namespace ExpressionTrees.Task2.ExpressionMapping.Tests.Models
 
         public Guid Id { get; set; }
 
+        [Map("Foreign", typeof(string))]
+        public Guid ForeignId { get; set; }
+
+        [Map("TRA", typeof(byte))]
+        public int Tratarara { get; set; }
+
         public int Count { get; set; }
 
         public string BreakProperty { get; set; }

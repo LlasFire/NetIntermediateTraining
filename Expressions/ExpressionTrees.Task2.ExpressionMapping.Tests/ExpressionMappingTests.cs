@@ -56,5 +56,24 @@ namespace ExpressionTrees.Task2.ExpressionMapping.Tests
             Assert.AreEqual(prepareModel.Id, res.Id);
             Assert.AreEqual(0, res.BreakProperty);
         }
+
+        [TestMethod]
+        public void TestMethod4()
+        {
+            // Arrange
+            var mapGenerator = new MappingGenerator();
+            var mapper = mapGenerator.Generate<Foo, Bar>();
+            var prepareModel = new Foo() { Name = "khuikh", Id = Guid.NewGuid(), BreakProperty = "rtrtrtrtr", ForeignId = Guid.NewGuid(), Tratarara = 120 };
+
+            // Act
+            var res = mapper.Map(prepareModel);
+
+            // Assert
+            Assert.AreEqual(prepareModel.Name, res.Name);
+            Assert.AreEqual(prepareModel.Id, res.Id);
+            Assert.AreEqual(0, res.BreakProperty);
+            Assert.AreEqual(prepareModel.ForeignId.ToString(), res.Foreign);
+            Assert.AreEqual(prepareModel.Tratarara, res.TRA);
+        }
     }
 }

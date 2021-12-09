@@ -15,5 +15,9 @@ namespace ExpressionTrees.Task2.ExpressionMapping.Tests.Models
         public decimal Count { get; set; }
 
         public int BreakProperty { get; set; }
+
+        public string Foreign { get; set; }
+
+        public byte TRA { get; set; }
     }
 }
